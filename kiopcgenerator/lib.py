@@ -64,6 +64,16 @@ def aes_128_cbc_encrypt(key, text):
     ciphertext = encryptor.encrypt(textb)
     return ciphertext.hex().upper()
 
+def aes_128_cbc_decrypt(key, text):
+    """
+    implements aes 128b encryption with cbc.
+    """
+    keyb = binascii.unhexlify(key)
+    textb = binascii.unhexlify(text)
+    encryptor = AES.new(keyb, AES.MODE_CBC, IV=IV)
+    ciphertext = encryptor.decrypt(textb)
+    return ciphertext.hex().upper()
+
 def gen_ki():
     """
     Clear ki random generator
@@ -76,7 +86,7 @@ def gen_opc(op, ki):
     generates opc based on op and ki
     """
     hss = AuChss()
-    return hss.calc_opc_hex(ki, op).upper()
+    return str(hss.calc_opc_hex(ki, op).upper(), 'utf-8')
 
 
 def gen_eki(transport, ki):
@@ -87,4 +97,8 @@ def gen_eki(transport, ki):
 
 
 def gen_opc_eki(op, transport, ki):
+    return {"KI": ki, "OPC": gen_opc(op, ki), "eKI": gen_eki(transport, ki)}
+
+def gen_opc_ki(op, transport, eki):
+    ki = aes_128_cbc_decrypt(transport, eki)
     return {"KI": ki, "OPC": gen_opc(op, ki), "eKI": gen_eki(transport, ki)}

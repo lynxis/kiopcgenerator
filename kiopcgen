@@ -23,8 +23,9 @@ if options.op and options.trans:
     if not options.ki:
         options.ki = kiopcgenerator.gen_ki()
 
-    result = kiopcgenerator.gen_opc_eki(options.op, options.trans, options.ki)
-    pprint.pprint(result)
+    result = kiopcgenerator.gen_opc_ki(options.op, options.trans, options.ki)
+    import json
+    print(json.dumps(result))
 
     sys.exit(0)
 else:
